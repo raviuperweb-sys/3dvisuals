@@ -56,7 +56,7 @@ app.use('/api/seo',       require('./routes/seo'));
 app.get('/api/health', (_, res) => res.json({ status: 'ok', time: new Date() }));
 
 // ── Catch-all: serve admin panel for /admin/* routes
-app.get('/admin*', (_, res) => res.sendFile(path.join(__dirname, 'public/admin/index.html')));
+app.get(['/admin', '/admin/*'], (_, res) => res.sendFile(path.join(__dirname, 'public/admin/index.html')));
 
 // ── Connect MongoDB then start
 const PORT = process.env.PORT || 3000;
