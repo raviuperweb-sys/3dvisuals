@@ -1,0 +1,1042 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Panel — 3D Visual Solution</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   ROOT TOKENS — 3D Visual Solution Brand System
+═══════════════════════════════════════════════ */
+:root {
+  --dark:   #0a0a0a;
+  --dark2:  #111111;
+  --dark3:  #1a1a1a;
+  --dark4:  #222222;
+  --orange: #F5A623;
+  --orange2:#e09520;
+  --blue:   #29ABE2;
+  --green:  #34d399;
+  --red:    #E8352A;
+  --gray:   #888888;
+  --gray2:  #555555;
+  --border: #222222;
+  --white:  #ffffff;
+  --ff-disp:'Syne', sans-serif;
+  --ff-body:'Inter', sans-serif;
+  --r8:     8px;
+  --r12:    12px;
+  --shadow: 0 4px 24px rgba(0,0,0,0.5);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:var(--ff-body);background:var(--dark);color:var(--white);min-height:100vh;overflow-x:hidden}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:var(--dark2)}
+::-webkit-scrollbar-thumb{background:var(--orange);border-radius:4px}
+
+/* ═══════════ LOGIN SCREEN ═══════════ */
+#loginScreen{
+  position:fixed;inset:0;background:var(--dark);
+  display:flex;align-items:center;justify-content:center;
+  z-index:9000;
+}
+.login-wrap{width:100%;max-width:420px;padding:20px}
+.login-box{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:16px;padding:40px;
+}
+.login-logo{
+  display:flex;align-items:center;gap:12px;margin-bottom:28px;
+}
+.login-logo-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:linear-gradient(135deg,var(--orange),#e09520);
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.4rem;
+}
+.login-logo h1{font-family:var(--ff-disp);font-size:1.1rem;line-height:1.2}
+.login-logo p{font-size:0.72rem;color:var(--gray)}
+.login-box h2{font-size:1.3rem;font-weight:700;margin-bottom:4px}
+.login-box .sub{font-size:0.82rem;color:var(--gray);margin-bottom:28px}
+.inp{
+  width:100%;padding:12px 14px;background:var(--dark3);
+  border:1px solid var(--border);border-radius:var(--r8);
+  color:var(--white);font-family:var(--ff-body);font-size:0.88rem;
+  outline:none;margin-bottom:12px;transition:border .2s;
+}
+.inp:focus{border-color:var(--orange)}
+.inp::placeholder{color:var(--gray2)}
+.btn-login{
+  width:100%;padding:13px;background:var(--orange);color:var(--dark);
+  border:none;border-radius:var(--r8);font-family:var(--ff-disp);
+  font-weight:700;font-size:0.92rem;cursor:pointer;
+  transition:background .2s,transform .1s;
+  margin-top:4px;
+}
+.btn-login:hover{background:var(--orange2);transform:translateY(-1px)}
+.login-err{color:var(--red);font-size:0.82rem;margin-top:8px;display:none;padding:8px 12px;background:rgba(232,53,42,.08);border-radius:6px}
+.login-hint{
+  margin-top:20px;padding:14px;background:rgba(245,166,35,0.06);
+  border:1px solid rgba(245,166,35,0.2);border-radius:var(--r8);
+  font-size:0.78rem;color:var(--gray);line-height:1.6;
+}
+.login-hint strong{color:var(--orange)}
+
+/* ═══════════ APP SHELL ═══════════ */
+#appShell{display:none;width:100%;min-height:100vh;flex-direction:row}
+#appShell.show{display:flex}
+
+/* ═══════════ SIDEBAR ═══════════ */
+#sidebar{
+  width:230px;min-height:100vh;background:var(--dark2);
+  border-right:1px solid var(--border);
+  display:flex;flex-direction:column;
+  position:sticky;top:0;height:100vh;overflow-y:auto;
+  flex-shrink:0;
+}
+.sidebar-logo{
+  padding:20px 18px 18px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:10px;
+}
+.logo-icon{
+  width:36px;height:36px;border-radius:8px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--orange),#e09520);
+  display:flex;align-items:center;justify-content:center;font-size:1.1rem;
+}
+.logo-text{font-family:var(--ff-disp);font-size:0.85rem;font-weight:700;line-height:1.2}
+.logo-text small{font-family:var(--ff-body);font-weight:400;font-size:0.65rem;color:var(--gray);display:block}
+
+.sidebar-nav{flex:1;padding:10px 8px}
+.nav-sep{
+  font-size:0.65rem;text-transform:uppercase;letter-spacing:.1em;
+  color:var(--gray2);padding:12px 10px 4px;font-weight:600;
+}
+.nav-item{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 12px;border-radius:var(--r8);
+  font-size:0.83rem;font-weight:500;color:var(--gray);
+  cursor:pointer;transition:all .2s;margin-bottom:1px;
+  position:relative;
+}
+.nav-item:hover{background:rgba(255,255,255,.04);color:var(--white)}
+.nav-item.active{background:rgba(245,166,35,.12);color:var(--orange)}
+.nav-item.active::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;
+  width:3px;background:var(--orange);border-radius:0 3px 3px 0;
+}
+.nav-icon{font-size:1rem;width:20px;text-align:center;flex-shrink:0}
+.nav-badge{
+  margin-left:auto;background:var(--orange);color:var(--dark);
+  border-radius:50px;padding:1px 7px;font-size:0.65rem;font-weight:700;
+}
+
+.sidebar-bottom{padding:10px 8px;border-top:1px solid var(--border)}
+.admin-info{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-bottom:4px}
+.admin-avatar{
+  width:32px;height:32px;border-radius:50%;
+  background:var(--orange);color:var(--dark);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--ff-disp);font-weight:700;font-size:0.9rem;flex-shrink:0;
+}
+.admin-name{font-size:0.82rem;font-weight:600}
+.admin-role{font-size:0.68rem;color:var(--gray)}
+
+/* ═══════════ MAIN AREA ═══════════ */
+#main{flex:1;display:flex;flex-direction:column;overflow-y:auto;min-width:0}
+
+/* Topbar */
+.topbar{
+  padding:0 24px;height:60px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--dark);position:sticky;top:0;z-index:100;
+  flex-shrink:0;
+}
+.topbar h1{font-family:var(--ff-disp);font-size:1rem;font-weight:700}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--green);
+  box-shadow:0 0 8px var(--green);
+}
+.topbar-label{font-size:0.72rem;color:var(--gray)}
+
+/* ═══════════ BUTTONS ═══════════ */
+.btn{
+  padding:8px 18px;border-radius:var(--r8);font-size:0.82rem;font-weight:600;
+  cursor:pointer;border:none;transition:all .2s;font-family:var(--ff-body);
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-primary{background:var(--orange);color:var(--dark)}
+.btn-primary:hover{background:var(--orange2);transform:translateY(-1px)}
+.btn-outline{background:transparent;color:var(--white);border:1px solid var(--border)}
+.btn-outline:hover{border-color:var(--orange);color:var(--orange)}
+.btn-danger{background:rgba(232,53,42,.1);color:var(--red);border:1px solid rgba(232,53,42,.2)}
+.btn-danger:hover{background:rgba(232,53,42,.2)}
+.btn-success{background:rgba(52,211,153,.1);color:var(--green);border:1px solid rgba(52,211,153,.2)}
+.btn-success:hover{background:rgba(52,211,153,.2)}
+.btn-blue{background:rgba(41,171,226,.1);color:var(--blue);border:1px solid rgba(41,171,226,.2)}
+.btn-sm{padding:5px 11px;font-size:0.76rem}
+
+/* ═══════════ CONTENT AREA ═══════════ */
+.content{padding:24px;flex:1}
+.page{display:none}.page.active{display:block}
+
+/* ═══════════ CARDS ═══════════ */
+.card{
+  background:var(--dark2);border:1px solid var(--border);
+  border-radius:var(--r12);overflow:hidden;margin-bottom:20px;
+}
+.card-pad{padding:24px}
+.card-head{
+  padding:14px 20px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-head h3{font-size:0.88rem;font-weight:600}
+
+/* ═══════════ STATS GRID ═══════════ */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.stat-card{
+  background:var(--dark2);border:1px solid var(--border);border-radius:var(--r12);
+  padding:20px;position:relative;overflow:hidden;
+}
+.stat-card::after{
+  content:'';position:absolute;top:-20px;right:-20px;
+  width:80px;height:80px;border-radius:50%;
+  background:rgba(245,166,35,0.05);
+}
+.stat-label{font-size:0.72rem;color:var(--gray);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px}
+.stat-num{font-family:var(--ff-disp);font-size:2rem;font-weight:700;line-height:1}
+.stat-sub{font-size:0.72rem;color:var(--gray);margin-top:6px}
+.stat-trend{font-size:0.72rem;color:var(--green);margin-top:4px}
+
+/* ═══════════ TABLE ═══════════ */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th,td{padding:11px 16px;text-align:left;font-size:0.81rem;border-bottom:1px solid var(--border)}
+th{color:var(--gray);font-weight:600;font-size:0.71rem;text-transform:uppercase;letter-spacing:.06em;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(255,255,255,.015)}
+
+/* ═══════════ BADGES ═══════════ */
+.badge{display:inline-block;padding:3px 10px;border-radius:50px;font-size:0.7rem;font-weight:600;white-space:nowrap}
+.badge-green{background:rgba(52,211,153,.15);color:var(--green)}
+.badge-orange{background:rgba(245,166,35,.15);color:var(--orange)}
+.badge-gray{background:rgba(255,255,255,.07);color:var(--gray)}
+.badge-red{background:rgba(232,53,42,.15);color:var(--red)}
+.badge-blue{background:rgba(41,171,226,.15);color:var(--blue)}
+
+/* ═══════════ TABS ═══════════ */
+.tabs{display:flex;gap:4px;margin-bottom:18px;flex-wrap:wrap}
+.tab-btn{
+  padding:6px 14px;border-radius:var(--r8);font-size:0.8rem;font-weight:500;
+  cursor:pointer;border:1px solid var(--border);background:transparent;
+  color:var(--gray);font-family:var(--ff-body);transition:all .2s;
+}
+.tab-btn.active{background:var(--orange);color:var(--dark);border-color:var(--orange)}
+.tab-btn:hover:not(.active){border-color:var(--gray2);color:var(--white)}
+
+/* ═══════════ FORMS ═══════════ */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.form-group{margin-bottom:0}
+.form-group label{display:block;font-size:0.75rem;font-weight:500;color:var(--gray);margin-bottom:6px}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:10px 12px;background:var(--dark3);
+  border:1px solid var(--border);border-radius:var(--r8);
+  color:var(--white);font-family:var(--ff-body);font-size:0.85rem;
+  outline:none;transition:border .2s;
+}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:var(--orange)}
+.form-group input::placeholder,.form-group textarea::placeholder{color:var(--gray2)}
+.form-group select option{background:var(--dark3)}
+.form-group textarea{resize:vertical;min-height:180px;line-height:1.6}
+.form-group.full{grid-column:1/-1}
+.form-actions{display:flex;gap:10px;margin-top:20px;padding-top:20px;border-top:1px solid var(--border)}
+.input-row{display:flex;gap:8px}
+.input-row input{flex:1}
+
+/* ═══════════ PORTFOLIO GRID ═══════════ */
+.port-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+.port-card{
+  background:var(--dark3);border:1px solid var(--border);
+  border-radius:var(--r8);overflow:hidden;transition:all .2s;
+}
+.port-card:hover{border-color:var(--gray2);transform:translateY(-2px)}
+.port-card-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--dark4)}
+.port-card-img img{width:100%;height:100%;object-fit:cover;transition:transform .3s}
+.port-card:hover .port-card-img img{transform:scale(1.04)}
+.port-card-img .placeholder-img{
+  width:100%;height:100%;display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:8px;color:var(--gray2);font-size:0.72rem;
+}
+.port-card-img .placeholder-img .ico{font-size:2rem}
+.port-hidden-overlay{
+  position:absolute;inset:0;background:rgba(0,0,0,.6);
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.72rem;color:var(--gray);
+}
+.port-card-body{padding:10px}
+.port-card-body h4{font-size:0.8rem;font-weight:500;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.port-card-body .cat{font-size:0.68rem;color:var(--gray);margin-bottom:8px;text-transform:capitalize}
+.port-card-actions{display:flex;gap:6px}
+
+/* ═══════════ UPLOAD ZONE ═══════════ */
+.upload-zone{
+  border:2px dashed var(--border);border-radius:var(--r12);padding:30px 20px;
+  text-align:center;cursor:pointer;transition:all .2s;
+}
+.upload-zone:hover,.upload-zone.over{border-color:var(--orange);background:rgba(245,166,35,.04)}
+.upload-zone p{color:var(--gray);font-size:0.82rem;margin-top:6px}
+.upload-zone .ico{font-size:2rem;margin-bottom:4px}
+
+/* ═══════════ WEBSITE PREVIEW ═══════════ */
+.preview-modal{
+  position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:8000;
+  display:flex;align-items:center;justify-content:center;padding:20px;
+}
+.preview-modal.hidden{display:none}
+.preview-box{
+  width:100%;max-width:900px;max-height:90vh;
+  background:var(--dark2);border:1px solid var(--border);border-radius:16px;
+  overflow:hidden;display:flex;flex-direction:column;
+}
+.preview-topbar{
+  padding:12px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--dark3);
+}
+.preview-url{
+  background:var(--dark4);border:1px solid var(--border);
+  border-radius:6px;padding:5px 12px;font-size:0.75rem;color:var(--gray);
+  flex:1;margin:0 12px;font-family:monospace;
+}
+.preview-dots{display:flex;gap:6px}
+.preview-dot{width:12px;height:12px;border-radius:50%}
+.preview-content{flex:1;overflow-y:auto;background:var(--dark)}
+
+/* ══════ WEBSITE PREVIEW SECTIONS ══════ */
+.prev-nav{
+  background:rgba(10,10,10,.9);backdrop-filter:blur(20px);
+  padding:0 24px;border-bottom:1px solid rgba(255,255,255,.06);
+  display:flex;align-items:center;justify-content:space-between;
+  height:60px;position:sticky;top:0;z-index:10;
+}
+.prev-nav-logo{display:flex;align-items:center;gap:8px;font-family:var(--ff-disp);font-size:.85rem;font-weight:700}
+.prev-nav-logo .ico{width:28px;height:28px;border-radius:6px;background:linear-gradient(135deg,var(--orange),#e09520);display:flex;align-items:center;justify-content:center;font-size:.8rem}
+.prev-nav-links{display:flex;gap:16px;font-size:.75rem;color:var(--gray)}
+.prev-nav-links span{color:var(--white);font-weight:500}
+
+.prev-hero{
+  position:relative;min-height:400px;display:flex;align-items:center;
+  background:var(--dark);overflow:hidden;
+}
+.prev-hero-video{
+  position:absolute;inset:0;object-fit:cover;width:100%;height:100%;
+  opacity:.4;
+}
+.prev-hero-content{
+  position:relative;z-index:2;padding:40px 24px;max-width:600px;
+}
+.prev-hero-content h1{
+  font-family:var(--ff-disp);font-size:clamp(1.4rem,4vw,2.2rem);font-weight:800;
+  line-height:1.15;margin-bottom:16px;
+}
+.prev-hero-content h1 em{font-style:normal;color:var(--orange)}
+.prev-hero-content h1 .blue{color:var(--blue)}
+.prev-cta-btn{
+  display:inline-block;padding:12px 24px;background:var(--orange);
+  color:var(--dark);border-radius:var(--r8);font-weight:700;font-size:.85rem;margin-top:20px;
+}
+
+.prev-section{padding:40px 24px;border-top:1px solid var(--border)}
+.prev-eyebrow{font-size:.65rem;color:var(--orange);text-transform:uppercase;letter-spacing:.1em;font-weight:600;margin-bottom:8px}
+.prev-section h2{font-family:var(--ff-disp);font-size:1.4rem;font-weight:700;margin-bottom:24px}
+
+.prev-port-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.prev-port-item{
+  border-radius:var(--r8);overflow:hidden;aspect-ratio:4/3;
+  background:var(--dark3);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:0.72rem;
+}
+.prev-port-item img{width:100%;height:100%;object-fit:cover}
+
+.prev-blog-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.prev-blog-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r8);overflow:hidden}
+.prev-blog-thumb{height:100px;background:var(--dark3);display:flex;align-items:center;justify-content:center;color:var(--gray);font-size:.72rem}
+.prev-blog-thumb img{width:100%;height:100%;object-fit:cover}
+.prev-blog-body{padding:12px}
+.prev-blog-body h4{font-size:.78rem;font-weight:600;margin-bottom:6px;line-height:1.4}
+.prev-blog-body p{font-size:.71rem;color:var(--gray);line-height:1.5}
+
+/* ═══════════ VIDEO SECTION ═══════════ */
+.video-showcase{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:20px;
+}
+.video-card{
+  background:var(--dark3);border:1px solid var(--border);border-radius:var(--r12);
+  overflow:hidden;
+}
+.video-card-inner{position:relative;padding-top:56.25%;background:var(--dark4)}
+.video-card-inner iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
+.video-card-inner .video-placeholder{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px;color:var(--gray);
+  cursor:pointer;
+}
+.video-card-inner .video-placeholder .play-btn{
+  width:52px;height:52px;border-radius:50%;
+  background:rgba(245,166,35,.15);border:2px solid rgba(245,166,35,.4);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.video-card-inner .video-placeholder:hover .play-btn{background:var(--orange);border-color:var(--orange)}
+.video-card-inner .video-placeholder:hover .play-btn svg{fill:var(--dark)}
+.video-card-body{padding:12px}
+.video-card-body h4{font-size:.82rem;font-weight:600;margin-bottom:4px}
+.video-card-body p{font-size:.72rem;color:var(--gray)}
+
+/* ═══════════ ENQUIRY DETAIL ═══════════ */
+.enq-detail{
+  background:var(--dark3);border:1px solid var(--border);border-radius:var(--r8);
+  padding:14px;margin:8px 0;
+}
+
+/* ═══════════ SETTINGS ═══════════ */
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.settings-card{background:var(--dark2);border:1px solid var(--border);border-radius:var(--r12);padding:24px}
+.settings-card h3{font-size:.9rem;font-weight:600;margin-bottom:6px}
+.settings-card .desc{font-size:.78rem;color:var(--gray);margin-bottom:20px}
+
+/* ═══════════ EMPTY STATE ═══════════ */
+.empty-state{text-align:center;padding:60px 20px;color:var(--gray)}
+.empty-state .ico{font-size:3rem;margin-bottom:16px;opacity:.4}
+.empty-state p{font-size:.88rem;margin-top:6px}
+
+/* ═══════════ TOAST ═══════════ */
+#toast{
+  position:fixed;bottom:24px;right:24px;z-index:99999;
+  background:var(--dark2);border:1px solid var(--border);border-radius:10px;
+  padding:12px 20px;font-size:.84rem;display:none;align-items:center;gap:10px;
+  box-shadow:0 8px 32px rgba(0,0,0,.6);max-width:320px;
+  transform:translateY(10px);transition:transform .3s;
+}
+#toast.show{display:flex;transform:translateY(0)}
+#toast.success{border-color:rgba(52,211,153,.4);color:var(--green)}
+#toast.error{border-color:rgba(232,53,42,.4);color:var(--red)}
+#toast.info{border-color:rgba(245,166,35,.4);color:var(--orange)}
+
+/* ═══════════ ACTIVITY FEED ═══════════ */
+.activity-feed{padding:4px 0}
+.activity-item{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:10px 20px;border-bottom:1px solid var(--border);
+  font-size:.8rem;
+}
+.activity-item:last-child{border-bottom:none}
+.activity-dot{
+  width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:4px;
+}
+
+/* ═══════════ RESPONSIVE ═══════════ */
+@media(max-width:900px){
+  #sidebar{width:200px}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .settings-grid{grid-template-columns:1fr}
+}
+@media(max-width:700px){
+  #sidebar{display:none}
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .form-grid{grid-template-columns:1fr}
+  .port-grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+}
+@media(max-width:500px){
+  .stats-grid{grid-template-columns:1fr}
+}
+
+/* ═══════════ TAG INPUT ═══════════ */
+.rich-preview{
+  background:rgba(245,166,35,.04);border:1px solid rgba(245,166,35,.2);
+  border-radius:var(--r8);padding:14px;margin-top:12px;font-size:.78rem;color:var(--gray);
+}
+.rich-preview strong{color:var(--orange)}
+
+/* ═══════════ MEDIA MANAGER ═══════════ */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px}
+.media-item{
+  aspect-ratio:1;border-radius:6px;overflow:hidden;position:relative;
+  background:var(--dark3);border:1px solid var(--border);cursor:pointer;
+}
+.media-item img{width:100%;height:100%;object-fit:cover}
+.media-item:hover::after{
+  content:'✓';position:absolute;inset:0;background:rgba(245,166,35,.6);
+  display:flex;align-items:center;justify-content:center;font-size:1.2rem;color:var(--dark);font-weight:700;
+}
+.media-item.selected{border-color:var(--orange)}
+.media-item.selected::after{content:'✓';position:absolute;inset:0;background:rgba(245,166,35,.4);display:flex;align-items:center;justify-content:center;font-size:1rem;color:var(--dark);font-weight:700}
+
+/* ══ Scrolling portfolio preview bg ══ */
+.hero-video-bg{
+  width:100%;aspect-ratio:16/9;max-height:320px;object-fit:cover;
+  border-radius:var(--r12);border:1px solid var(--border);margin-bottom:16px;
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════
+     LOGIN SCREEN
+══════════════════════════════════════════ -->
+<div id="loginScreen">
+  <div class="login-wrap">
+    <div class="login-box">
+      <div class="login-logo">
+        <div class="login-logo-icon" style="background:none;padding:0;overflow:hidden">
+          <img src="/assets/logo.png" alt="3D Visual" style="width:48px;height:48px;object-fit:contain;border-radius:10px" onerror="this.style.display='none';this.parentElement.innerHTML='<span style=\'font-size:1.4rem\'>🏛️</span>';this.parentElement.style.background='linear-gradient(135deg,var(--orange),#e09520)'">
+        </div>
+        <div>
+          <h1>3D Visual Solution</h1>
+          <p>Content Management System</p>
+        </div>
+      </div>
+      <h2>Welcome Back</h2>
+      <p class="sub">Sign in to manage your website content</p>
+      <input class="inp" type="email" id="loginEmail" placeholder="Email address" autocomplete="username">
+      <input class="inp" type="password" id="loginPass" placeholder="Password" autocomplete="current-password">
+      <button class="btn-login" onclick="doLogin()">Sign In →</button>
+      <div class="login-err" id="loginErr">Incorrect email or password.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════
+     APP SHELL
+══════════════════════════════════════════ -->
+<div id="appShell">
+
+  <!-- ── SIDEBAR ── -->
+  <aside id="sidebar">
+    <div class="sidebar-logo">
+      <div class="logo-icon" style="background:none;padding:0;overflow:hidden">
+        <img src="/assets/logo.png" alt="Logo" style="width:36px;height:36px;object-fit:contain;border-radius:7px" onerror="this.style.display='none';this.parentElement.innerHTML='🏛️';this.parentElement.style.background='linear-gradient(135deg,var(--orange),#e09520)'">
+      </div>
+      <div class="logo-text">
+        3D Visual
+        <small>Admin Panel</small>
+      </div>
+    </div>
+    <nav class="sidebar-nav">
+      <div class="nav-sep">Main</div>
+      <div class="nav-item active" onclick="nav('dashboard')">
+        <span class="nav-icon">📊</span> Dashboard
+      </div>
+      <div class="nav-item" onclick="nav('portfolio')">
+        <span class="nav-icon">🖼️</span> Portfolio
+      </div>
+      <div class="nav-item" onclick="nav('videos')">
+        <span class="nav-icon">🎬</span> Videos
+      </div>
+      <div class="nav-item" onclick="nav('posts')">
+        <span class="nav-icon">✍️</span> Blog Posts
+      </div>
+      <div class="nav-item" onclick="nav('enquiries')">
+        <span class="nav-icon">📩</span> Enquiries
+        <span class="nav-badge" id="newBadge" style="display:none">0</span>
+      </div>
+      <div class="nav-sep">Settings</div>
+      <div class="nav-item" onclick="nav('seo')">
+        <span class="nav-icon">🔍</span> SEO Manager
+      </div>
+      <div class="nav-item" onclick="nav('settings')">
+        <span class="nav-icon">⚙️</span> Settings
+      </div>
+      <div class="nav-item" onclick="window.open('/','_blank')">
+        <span class="nav-icon">🌐</span> Open Website
+      </div>
+    </nav>
+    <div class="sidebar-bottom">
+      <div class="admin-info">
+        <div class="admin-avatar" id="adminInitial">A</div>
+        <div>
+          <div class="admin-name" id="adminName">Admin</div>
+          <div class="admin-role">Administrator</div>
+        </div>
+      </div>
+      <div class="nav-item" onclick="logout()">
+        <span class="nav-icon">🚪</span> Logout
+      </div>
+    </div>
+  </aside>
+
+  <!-- ── MAIN ── -->
+  <div id="main">
+    <div class="topbar">
+      <h1 id="pageHeading">Dashboard</h1>
+      <div class="topbar-right">
+        <div class="topbar-dot"></div>
+        <span class="topbar-label">Live Website</span>
+        <div id="topbarActions"></div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <!-- ════════ DASHBOARD ════════ -->
+      <div class="page active" id="page-dashboard">
+        <div class="stats-grid">
+          <div class="stat-card">
+            <div class="stat-label">Portfolio Items</div>
+            <div class="stat-num" id="sPort">—</div>
+            <div class="stat-trend">↑ Exterior, Interior, Walkthrough</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Videos Uploaded</div>
+            <div class="stat-num" id="sVid">—</div>
+            <div class="stat-trend">↑ YouTube + Direct uploads</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Blog Posts</div>
+            <div class="stat-num" id="sPosts">—</div>
+            <div class="stat-trend">↑ Published &amp; Drafts</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">New Enquiries</div>
+            <div class="stat-num" id="sNewEnq" style="color:var(--orange)">—</div>
+            <div class="stat-sub">Unread messages</div>
+          </div>
+        </div>
+
+        <!-- Recent Enquiries -->
+        <div class="card" style="margin-bottom:20px">
+          <div class="card-head">
+            <h3>Recent Enquiries</h3>
+            <button class="btn btn-outline btn-sm" onclick="nav('enquiries')">View All</button>
+          </div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Phone</th><th>Service</th><th>Date</th><th>Status</th></tr></thead>
+              <tbody id="dashEnqTable"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Activity Feed + Quick Actions -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px">
+          <div class="card">
+            <div class="card-head"><h3>Recent Activity</h3></div>
+            <div class="activity-feed" id="activityFeed"></div>
+          </div>
+          <div class="card">
+            <div class="card-head"><h3>Quick Actions</h3></div>
+            <div style="padding:16px;display:grid;grid-template-columns:1fr 1fr;gap:10px">
+              <button class="btn btn-primary" onclick="nav('portfolio');setTimeout(()=>document.getElementById('addPortForm').scrollIntoView({behavior:'smooth'}),300)">+ Add Portfolio</button>
+              <button class="btn btn-blue" onclick="nav('videos');setTimeout(()=>document.getElementById('addVideoForm').scrollIntoView({behavior:'smooth'}),300)">+ Add Video</button>
+              <button class="btn btn-outline" onclick="nav('posts');setTimeout(newPost,300)">+ New Blog Post</button>
+              <button class="btn btn-success" onclick="window.open('index.html','_blank')">🌐 Open Website</button>
+            </div>
+            <div style="padding:0 16px 16px">
+              <div style="background:rgba(245,166,35,.06);border:1px solid rgba(245,166,35,.2);border-radius:8px;padding:12px;font-size:.78rem;color:var(--gray);line-height:1.6">
+                <strong style="color:var(--orange)">Website: 3dvisual.in</strong><br>
+                All changes you make here will reflect on the live website once the backend is connected. This demo stores data locally.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ PORTFOLIO ════════ -->
+      <div class="page" id="page-portfolio">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="filterPortfolio('all',this)">All</button>
+          <button class="tab-btn" onclick="filterPortfolio('exterior',this)">Exterior</button>
+          <button class="tab-btn" onclick="filterPortfolio('interior',this)">Interior</button>
+          <button class="tab-btn" onclick="filterPortfolio('walkthrough',this)">Walkthrough</button>
+          <button class="tab-btn" onclick="filterPortfolio('plans',this)">Floor Plans</button>
+          <button class="tab-btn" onclick="filterPortfolio('drone',this)">Drone</button>
+        </div>
+
+        <!-- Add New -->
+        <div class="card card-pad" id="addPortForm" style="margin-bottom:20px">
+          <h3 style="font-size:.9rem;margin-bottom:18px">Add New Portfolio Item</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Project Title *</label>
+              <input type="text" id="pTitle" placeholder="e.g. Nature's Lap Residential">
+            </div>
+            <div class="form-group">
+              <label>Category *</label>
+              <select id="pCat">
+                <option value="exterior">Exterior</option>
+                <option value="interior">Interior</option>
+                <option value="walkthrough">3D Walkthrough</option>
+                <option value="plans">Floor Plans</option>
+                <option value="drone">Drone</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Client Name</label>
+              <input type="text" id="pClient" placeholder="Optional">
+            </div>
+            <div class="form-group">
+              <label>Location</label>
+              <input type="text" id="pLocation" placeholder="e.g. Bengaluru">
+            </div>
+            <div class="form-group full">
+              <label>Image URL *</label>
+              <div class="input-row">
+                <input type="text" id="pUrl" placeholder="https://3dvisual.in/assets/images/... or paste any image URL">
+                <label class="btn btn-outline" style="cursor:pointer;white-space:nowrap;flex-shrink:0">
+                  📁 Upload
+                  <input type="file" accept="image/*" style="display:none" onchange="handlePortImg(this)">
+                </label>
+              </div>
+            </div>
+            <div class="form-group">
+              <label>Tags (comma-separated)</label>
+              <input type="text" id="pTags" placeholder="luxury, high-rise, residential">
+            </div>
+            <div class="form-group">
+              <label>Visible on website</label>
+              <select id="pVisible">
+                <option value="true">Yes — Show on website</option>
+                <option value="false">No — Hidden</option>
+              </select>
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" onclick="addPortItem()">Add to Portfolio</button>
+          </div>
+        </div>
+
+        <!-- Grid -->
+        <div class="port-grid" id="portGrid"></div>
+      </div>
+
+      <!-- ════════ VIDEOS ════════ -->
+      <div class="page" id="page-videos">
+        <p style="font-size:.82rem;color:var(--gray);margin-bottom:20px">
+          Manage the videos shown on the homepage and portfolio pages. Add YouTube links or direct video URLs.
+        </p>
+
+        <!-- Add Video -->
+        <div class="card card-pad" id="addVideoForm" style="margin-bottom:24px">
+          <h3 style="font-size:.9rem;margin-bottom:16px">Add New Video</h3>
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Video Title *</label>
+              <input type="text" id="vTitle" placeholder="e.g. Exterior Walkthrough — Marthahalli">
+            </div>
+            <div class="form-group">
+              <label>Category</label>
+              <select id="vCat">
+                <option value="exterior">Exterior</option>
+                <option value="interior">Interior</option>
+                <option value="walkthrough">3D Walkthrough</option>
+                <option value="drone">Drone</option>
+                <option value="highlight">Highlight Reel</option>
+              </select>
+            </div>
+            <div class="form-group full">
+              <label>YouTube URL or Embed URL *</label>
+              <input type="text" id="vUrl" placeholder="https://www.youtube.com/watch?v=... or https://youtu.be/...">
+            </div>
+            <div class="form-group">
+              <label>Show on Homepage</label>
+              <select id="vHome">
+                <option value="true">Yes — Feature on Homepage</option>
+                <option value="false">No — Portfolio only</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Description</label>
+              <input type="text" id="vDesc" placeholder="Brief description of this video">
+            </div>
+          </div>
+          <div style="margin-top:16px">
+            <button class="btn btn-primary" onclick="addVideo()">Add Video</button>
+          </div>
+        </div>
+
+        <!-- Video Grid -->
+        <h3 style="font-size:.88rem;font-weight:600;margin-bottom:14px">Uploaded Videos</h3>
+        <div class="video-showcase" id="videoGrid"></div>
+      </div>
+
+      <!-- ════════ BLOG POSTS ════════ -->
+      <div class="page" id="page-posts">
+        <!-- List View -->
+        <div id="postListView">
+          <div class="tabs">
+            <button class="tab-btn active" onclick="filterPosts('all',this)">All</button>
+            <button class="tab-btn" onclick="filterPosts('published',this)">Published</button>
+            <button class="tab-btn" onclick="filterPosts('draft',this)">Drafts</button>
+          </div>
+          <div class="card">
+            <div class="tbl-wrap">
+              <table>
+                <thead><tr><th>Title</th><th>Category</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
+                <tbody id="postsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Editor View -->
+        <div id="postEditorView" style="display:none">
+          <div class="card card-pad">
+            <h3 style="font-size:.95rem;margin-bottom:20px" id="editorHeading">New Post</h3>
+            <input type="hidden" id="editPostId">
+            <div class="form-grid">
+              <div class="form-group full">
+                <label>Post Title *</label>
+                <input type="text" id="postTitle" placeholder="e.g. How 3D Rendering Transforms Real Estate Sales">
+              </div>
+              <div class="form-group">
+                <label>Category</label>
+                <select id="postCat">
+                  <option>Blog</option><option>Tips</option><option>Guide</option><option>Tech</option><option>News</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Status</label>
+                <select id="postStatus">
+                  <option value="draft">Draft</option>
+                  <option value="published">Published</option>
+                </select>
+              </div>
+              <div class="form-group full">
+                <label>Excerpt (shown in blog listing)</label>
+                <input type="text" id="postExcerpt" placeholder="Short 1–2 sentence summary...">
+              </div>
+              <div class="form-group full">
+                <label>Featured Image URL</label>
+                <div class="input-row">
+                  <input type="text" id="postImage" placeholder="https://...">
+                  <label class="btn btn-outline" style="cursor:pointer;white-space:nowrap;flex-shrink:0">
+                    📁 Upload
+                    <input type="file" accept="image/*" style="display:none" onchange="handleBlogImg(this)">
+                  </label>
+                </div>
+                <img id="postImagePrev" src="" alt="" style="display:none;margin-top:8px;max-height:140px;border-radius:8px;object-fit:cover">
+              </div>
+              <div class="form-group full">
+                <label>Content (HTML supported) *</label>
+                <textarea id="postContent" placeholder="Write your full blog post here. HTML tags like &lt;h2&gt;, &lt;p&gt;, &lt;img&gt;, &lt;ul&gt; are supported..."></textarea>
+              </div>
+              <div class="form-group">
+                <label>Tags</label>
+                <input type="text" id="postTags" placeholder="3D rendering, architecture, tips">
+              </div>
+              <div class="form-group">
+                <label>Author</label>
+                <input type="text" id="postAuthor" value="3D Visual Team">
+              </div>
+              <div class="form-group full" style="background:rgba(245,166,35,.04);padding:16px;border-radius:8px;border:1px solid rgba(245,166,35,.15)">
+                <label style="color:var(--orange)">SEO Settings</label>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:10px">
+                  <div class="form-group" style="margin:0">
+                    <label>SEO Title</label>
+                    <input type="text" id="postSeoTitle" placeholder="Custom title for search engines">
+                  </div>
+                  <div class="form-group" style="margin:0">
+                    <label>SEO Description</label>
+                    <input type="text" id="postSeoDesc" placeholder="Meta description (160 chars)">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button class="btn btn-primary" onclick="savePost()">💾 Save Post</button>
+              <button class="btn btn-success" onclick="()=>{document.getElementById('postStatus').value='published';savePost()}">🚀 Publish</button>
+              <button class="btn btn-outline" onclick="cancelEditor()">Cancel</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ ENQUIRIES ════════ -->
+      <div class="page" id="page-enquiries">
+        <div class="tabs">
+          <button class="tab-btn active" onclick="filterEnq('all',this)">All</button>
+          <button class="tab-btn" onclick="filterEnq('new',this)">New</button>
+          <button class="tab-btn" onclick="filterEnq('read',this)">Read</button>
+          <button class="tab-btn" onclick="filterEnq('replied',this)">Replied</button>
+        </div>
+        <div class="card">
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Name</th><th>Phone</th><th>Email</th><th>Service</th><th>Message</th><th>Date</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody id="enqTable"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ SETTINGS ════════ -->
+      <div class="page" id="page-settings">
+        <div class="settings-grid">
+          <div class="settings-card">
+            <h3>Change Password</h3>
+            <p class="desc">Update the admin login credentials</p>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Current Password</label>
+              <input type="password" id="curPass" placeholder="••••••••">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>New Password</label>
+              <input type="password" id="newPass" placeholder="••••••••">
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>Confirm New Password</label>
+              <input type="password" id="confPass" placeholder="••••••••">
+            </div>
+            <button class="btn btn-primary" onclick="changePassword()">Update Password</button>
+          </div>
+
+          <div class="settings-card">
+            <h3>Studio Information</h3>
+            <p class="desc">Update the about section text shown on the website</p>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Studio Name</label>
+              <input type="text" id="studioName" value="3D Visual Solution">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Tagline</label>
+              <input type="text" id="studioTag" value="Photo-Realistic Architectural Renders">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Phone</label>
+              <input type="text" id="studioPhone" value="+91 88673 75534">
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>Email</label>
+              <input type="text" id="studioEmail" value="info@3dvisuals.in">
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Save Settings</button>
+          </div>
+
+          <div class="settings-card">
+            <h3>Hero Section</h3>
+            <p class="desc">Control what appears in the homepage hero</p>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Hero Headline</label>
+              <input type="text" id="heroH1" value="Transform Concepts into Stunning Photo-Realistic Architectural Renders">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Hero Sub-text</label>
+              <textarea id="heroSub" style="min-height:80px;resize:none">We specialise in high-quality 3D visualisations — exterior &amp; interior rendering, walkthroughs, floor plans, drone + 3D.</textarea>
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Projects Count</label>
+              <input type="text" id="heroProjects" value="500+">
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>Happy Clients Count</label>
+              <input type="text" id="heroClients" value="200+">
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Save Hero Settings</button>
+          </div>
+
+          <div class="settings-card">
+            <h3>Social Media Links</h3>
+            <p class="desc">Update your social media profiles</p>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Instagram</label>
+              <input type="text" id="socIg" placeholder="https://instagram.com/...">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>YouTube</label>
+              <input type="text" id="socYt" placeholder="https://youtube.com/...">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Facebook</label>
+              <input type="text" id="socFb" placeholder="https://facebook.com/...">
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>LinkedIn</label>
+              <input type="text" id="socLi" placeholder="https://linkedin.com/...">
+            </div>
+            <button class="btn btn-primary" onclick="saveSettings()">Save Links</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ════════ SEO MANAGER ════════ -->
+      <div class="page" id="page-seo">
+        <div class="settings-grid">
+          <div class="settings-card" style="grid-column:1/-1">
+            <h3>🔍 SEO Manager</h3>
+            <p class="desc">Control how your website appears in Google and other search engines</p>
+          </div>
+
+          <div class="settings-card">
+            <h3>Site Meta Tags</h3>
+            <p class="desc">Main title and description shown in Google results</p>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Site Title (shown in browser tab & Google)</label>
+              <input type="text" id="seoSiteTitle" placeholder="3D Visual Solution — Architectural Renders">
+            </div>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>Meta Description (max 160 chars)</label>
+              <textarea id="seoSiteDesc" style="min-height:80px;resize:none" placeholder="Short description of your website for search engines..."></textarea>
+              <small id="seoDescCount" style="color:var(--gray);font-size:.72rem">0/160 characters</small>
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>Keywords (comma separated)</label>
+              <input type="text" id="seoKeywords" placeholder="3D rendering, architectural visualization, Bengaluru">
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>Canonical URL</label>
+              <input type="text" id="seoCanonical" placeholder="https://3dvisual.in">
+            </div>
+            <button class="btn btn-primary" onclick="saveSeo()">Save SEO Settings</button>
+          </div>
+
+          <div class="settings-card">
+            <h3>Social & OG Image</h3>
+            <p class="desc">Image shown when your site is shared on WhatsApp, Facebook, LinkedIn</p>
+            <div class="form-group" style="margin-bottom:12px">
+              <label>OG / Social Share Image URL</label>
+              <input type="text" id="seoOgImage" placeholder="https://3dvisual.in/assets/og-image.jpg">
+            </div>
+            <div id="seoOgPreview" style="margin-bottom:12px;display:none">
+              <img id="seoOgImg" src="" alt="" style="max-height:120px;border-radius:8px;border:1px solid var(--border);object-fit:cover;width:100%">
+            </div>
+            <div class="form-group" style="margin-bottom:16px">
+              <label>Google Analytics Measurement ID</label>
+              <input type="text" id="seoGA" placeholder="G-XXXXXXXXXX">
+            </div>
+            <button class="btn btn-primary" onclick="saveSeo()">Save</button>
+          </div>
+
+          <div class="settings-card" style="grid-column:1/-1">
+            <h3>Robots.txt</h3>
+            <p class="desc">Controls what search engines are allowed to crawl. Default is allow all.</p>
+            <div class="form-group" style="margin-bottom:16px">
+              <textarea id="seoRobots" style="min-height:100px;resize:vertical;font-family:monospace;font-size:.8rem">User-agent: *
+Allow: /</textarea>
+            </div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="btn btn-primary" onclick="saveSeo()">Save Robots.txt</button>
+              <a href="/api/seo/sitemap.xml" target="_blank" class="btn btn-outline">📋 View Sitemap.xml</a>
+              <a href="/api/seo/robots.txt" target="_blank" class="btn btn-outline">🤖 View Robots.txt</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /appShell -->
+
+<!-- Toast -->
+<div id="toast"></div>
+
+<!-- ══════════════════════════════════════════
+     JAVASCRIPT — Full Logic
+══════════════════════════════════════════ -->
+<script src="/admin/admin-api.js"></script>
+</body>
+</html>
