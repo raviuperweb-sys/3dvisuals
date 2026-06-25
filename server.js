@@ -10,16 +10,7 @@ const app = express();
 
 // ── Security headers (relax CSP for admin panel fonts/icons)
 app.use(helmet({
-  contentSecurityPolicy: {
-    directives: {
-      defaultSrc: ["'self'"],
-      scriptSrc:  ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
-      styleSrc:   ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com", "https://fonts.gstatic.com"],
-      fontSrc:    ["'self'", "https://fonts.gstatic.com"],
-      imgSrc:     ["'self'", "data:", "https:", "blob:"],
-      connectSrc: ["'self'"],
-    }
-  }
+  contentSecurityPolicy: false
 }));
 
 // ── CORS — allow your domain in production
