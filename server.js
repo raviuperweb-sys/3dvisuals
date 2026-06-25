@@ -14,12 +14,8 @@ app.use(helmet({
 }));
 
 // ── CORS — allow your domain in production
-const allowedOrigins = (process.env.ALLOWED_ORIGINS || 'http://localhost:3000').split(',');
 app.use(cors({
-  origin: (origin, cb) => {
-    if (!origin || allowedOrigins.includes(origin)) return cb(null, true);
-    cb(new Error('Not allowed by CORS'));
-  },
+  origin: true,
   credentials: true
 }));
 
