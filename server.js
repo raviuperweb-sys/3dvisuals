@@ -18,12 +18,12 @@ app.use(cors({
   origin: true,
   credentials: true
 }));
-
+app.set('trust proxy', 1);
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 
 // ── Rate limiting on auth
-app.use('/api/auth', rateLimit({ windowMs: 15 * 60 * 1000, max: 20, message: { error: 'Too many attempts, try later.' } }));
+// rate limit disabled for Railway proxy compatibility
 
 // ── Static files  (serve admin panel + uploads)
 app.use(express.static(path.join(__dirname, 'public')));
@@ -45,7 +45,7 @@ app.get('/api/health', (_, res) => res.json({ status: 'ok', time: new Date() }))
 // ── Catch-all: serve admin panel for /admin/* routes
 app.get('/admin', (_, res) => res.sendFile(path.join(__dirname, 'public/admin/index.html')));
 app.get('/admin/', (_, res) => res.sendFile(path.join(__dirname, 'public/admin/index.html')));
-
+app.get('/', (_, res) => res.redirect('https://3dvisual.in'));
 // ── Connect MongoDB then start
 const PORT = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/3dvisual')
