@@ -595,7 +595,7 @@ async function saveSeo() {
 }
 
 function openPreview() {
-  window.open('/', '_blank');
+  window.open('https://3dvisual.in', '_blank');
 }
 
 document.addEventListener('keydown', e => {
